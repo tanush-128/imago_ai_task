@@ -77,4 +77,3 @@ The application is designed to be responsive across different device sizes. Here
 
 
 
-# imago_ai_task

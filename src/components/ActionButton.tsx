@@ -19,7 +19,7 @@ export const ActionButton = ({ card, onClick }: { card: any, onClick: () => void
                     {card.title}
                   </h3>
 
-                  <div className="absolute -right-[10px] -bottom-[10px] rounded-xl box-border z-30 transition-transform duration-300 group-hover:translate-x-[-4px] group-hover:translate-y-[-4px]"
+                  <div className="absolute -right-[10px] -bottom-[10px] rounded-xl box-border  transition-transform duration-300 group-hover:translate-x-[-4px] group-hover:translate-y-[-4px]"
                   style={{ color: card.color,
                     background: `linear-gradient(to bottom right, ${card.color}50, ${card.color}00)`
                   }}

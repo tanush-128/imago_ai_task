@@ -2,6 +2,8 @@
 
 A modern, responsive AI-powered image analysis and generation web application built with Next.js and Tailwind CSS.
 
+**Live Demo**: [https://imago-ai-task.vercel.app/](https://imago-ai-task.vercel.app/)
+
 ## Technical Stack
 
 - **Frontend Framework**: Next.js (React)
@@ -23,10 +25,11 @@ A modern, responsive AI-powered image analysis and generation web application bu
    - Shared context for state management
    - Responsive sidebar that transforms into a top bar on mobile
 
-3. **Dark Theme**:
-   - Custom dark theme implementation
-   - Consistent color palette using custom Tailwind colors
+3. **Theme Support**:
+   - Dual theme implementation (Dark and Light modes)
+   - Custom color palettes for both themes
    - Optimized contrast ratios for accessibility
+   - Smooth theme transition animations
 
 ## Setup Instructions
 

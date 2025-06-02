@@ -1,32 +1,59 @@
 import Image from "next/image";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { useChatContext } from "../context/ChatContext";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "next-themes";
 
 const Chat = () => {
   const { messages } = useChatContext();
+  const { theme } = useTheme();
   
   return (
-    <div className="min-h-screen p-4 sm:p-8 md:p-12">
-      <div className="mx-auto max-w-6xl">
-        {messages.map((message, index) => (
-          <div key={index} className="mb-4 sm:mb-8">
-            {message.isUser ? (
-              <UserMessage message={message.content} />
-            ) : (
-              <BotMessage message={message.content} heading={message.heading || ""} />
-            )}
-          </div>
-        ))}
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen p-4 sm:p-8 md:p-12 w-full"
+    >
+      <div className="mx-auto w-full">
+        <AnimatePresence>
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="mb-4 sm:mb-8"
+          >
+            <UserMessage message="Show me sales data for the last 6 months" />
+          </motion.div>
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mb-4 sm:mb-8"
+          >
+            <BotMessage 
+              message={`
+               
+              `} 
+              heading="Sales Analysis"
+            />
+          </motion.div>
+        </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
 const UserMessage = ({ message }: { message: string }) => {
+  const { theme } = useTheme();
   return (
-    <div className="flex items-center justify-end gap-2 sm:gap-4">
-      <div className="bg-custom-dark-3 rounded-xl border-[1px] border-white/10 p-1.5 sm:p-2">
+    <motion.div 
+      whileHover={{ scale: 1.01 }}
+      className="flex items-center justify-end gap-2 sm:gap-4"
+    >
+      <motion.div 
+        whileHover={{ scale: 1.1 }}
+        className={`${theme === 'dark' ? 'bg-custom-dark-3' : 'bg-custom-light-1'} rounded-xl border-[1px] ${theme === 'dark' ? 'border-white/10' : 'border-black/10'} p-1.5 sm:p-2`}
+      >
         <svg
           width="20"
           height="20"
@@ -37,43 +64,163 @@ const UserMessage = ({ message }: { message: string }) => {
         >
           <path
             d="M12 2.99998H5C4.46957 2.99998 3.96086 3.2107 3.58579 3.58577C3.21071 3.96084 3 4.46955 3 4.99998V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0391 21 19.5304 21 19V12M18.375 2.62498C18.7728 2.22716 19.3124 2.00366 19.875 2.00366C20.4376 2.00366 20.9772 2.22716 21.375 2.62498C21.7728 3.02281 21.9963 3.56237 21.9963 4.12498C21.9963 4.68759 21.7728 5.22716 21.375 5.62498L12.362 14.639C12.1245 14.8762 11.8312 15.0499 11.509 15.144L8.636 15.984C8.54995 16.0091 8.45874 16.0106 8.37191 15.9883C8.28508 15.9661 8.20583 15.9209 8.14245 15.8575C8.07907 15.7942 8.03389 15.7149 8.01164 15.6281C7.9894 15.5412 7.9909 15.45 8.016 15.364L8.856 12.491C8.95053 12.169 9.12453 11.876 9.362 11.639L18.375 2.62498Z"
-            stroke="#7C7676"
+            stroke={theme === 'dark' ? "#7C7676" : "#4B5563"}
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
         </svg>
-      </div>
-      <div className="bg-custom-dark-3 flex items-center gap-2 sm:gap-4 rounded-xl border-[1px] border-white/10 px-3 sm:px-5 py-2 sm:py-4 text-white">
-        <div className="flex h-8 w-8 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-gradient-to-r from-pink-500 to-purple-500">
+      </motion.div>
+      <motion.div 
+        whileHover={{ scale: 1.01 }}
+        className={`${theme === 'dark' ? 'bg-custom-dark-3' : 'bg-custom-light-1'} flex items-center gap-2 sm:gap-4 rounded-xl border-[1px] ${theme === 'dark' ? 'border-white/10' : 'border-black/10'} px-3 sm:px-5 py-2 sm:py-4 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+      >
+        <motion.div 
+          whileHover={{ scale: 1.1 }}
+          className="flex h-8 w-8 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-gradient-to-r from-pink-500 to-purple-500"
+        >
           <span className="text-base sm:text-lg font-semibold text-white">MC</span>
+        </motion.div>
+        <div className="text-sm sm:text-base">
+          {message}
         </div>
-        <div className="prose prose-invert max-w-none text-sm sm:text-base">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{message}</ReactMarkdown>
-        </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
 const BotMessage = ({ message, heading }: { message: string, heading: string }) => {
+  const { theme } = useTheme();
   return (
-    <div className="flex flex-col gap-2 sm:gap-4">
-      <div className="flex justify-start items-center gap-2 sm:gap-4">
-        <div className="bg-custom-dark-3 flex flex-col gap-2 sm:gap-4 rounded-xl border-[1px] border-white/10 px-3 sm:px-5 py-2 sm:py-4 text-white">
-          <div className="flex items-center gap-2 sm:gap-4 border-b border-white/10 pb-2 sm:pb-4">
-            <div className="rounded-full w-8 h-8 sm:w-12 sm:h-12">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex flex-col gap-4"
+    >
+      <div className="flex justify-start items-center gap-4">
+        <motion.div 
+          whileHover={{ scale: 1.01 }}
+          className={`${theme === 'dark' ? 'bg-custom-dark-3' : 'bg-custom-light-1'} flex flex-col gap-4 rounded-xl border-[1px] ${theme === 'dark' ? 'border-white/10' : 'border-black/10'} p-5 ${theme === 'dark' ? 'text-white' : 'text-gray-800'} flex-grow`}
+        >
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className={`flex items-center gap-4 border-b ${theme === 'dark' ? 'border-white/10' : 'border-black/10'} pb-4`}
+          >
+            <motion.div 
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              className="rounded-full w-12 h-12"
+            >
               <Image src="/logo.svg" alt="Imago AI" width={48} height={48} className="w-full h-full" />
+            </motion.div>
+            <span className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'} text-center`}>{heading}</span>
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="ml-0 sm:ml-[60px] h-[400px] overflow-y-auto"
+          >
+            <div className="space-y-6">
+              <div className="flex w-full gap-4 items-center">
+                <div className={`${theme === 'dark' ? 'bg-custom-dark-4' : 'bg-custom-light-2'} rounded-xl border ${theme === 'dark' ? 'border-white/10' : 'border-black/10'} flex-1 p-6`}>
+                  <h3 className={`text-xl font-semibold mb-4 ${theme === 'dark' ? 'text-white/90' : 'text-gray-800'}`}>Monthly Sales Performance 2024</h3>
+                  <div className="relative h-[300px] flex items-end justify-between gap-2 mb-6 px-2">
+                    <div style={{height: "180px"}} className="w-full max-w-[50px] bg-gradient-to-t from-purple-500 to-pink-500 rounded-t-lg relative group">
+                      <div className={`absolute -top-6 left-1/2 transform -translate-x-1/2 ${theme === 'dark' ? 'bg-white/10' : 'bg-black/10'} px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+                        $65,200
+                      </div>
+                      <div className={`absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs ${theme === 'dark' ? 'text-white/70' : 'text-gray-600'}`}>Jan</div>
+                    </div>
+                    <div style={{height: "225px"}} className="w-full max-w-[50px] bg-gradient-to-t from-purple-500 to-pink-500 rounded-t-lg relative group">
+                      <div className={`absolute -top-6 left-1/2 transform -translate-x-1/2 ${theme === 'dark' ? 'bg-white/10' : 'bg-black/10'} px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+                        $78,900
+                      </div>
+                      <div className={`absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs ${theme === 'dark' ? 'text-white/70' : 'text-gray-600'}`}>Feb</div>
+                    </div>
+                    <div style={{height: "135px"}} className="w-full max-w-[50px] bg-gradient-to-t from-purple-500 to-pink-500 rounded-t-lg relative group">
+                      <div className={`absolute -top-6 left-1/2 transform -translate-x-1/2 ${theme === 'dark' ? 'bg-white/10' : 'bg-black/10'} px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+                        $52,300
+                      </div>
+                      <div className={`absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs ${theme === 'dark' ? 'text-white/70' : 'text-gray-600'}`}>Mar</div>
+                    </div>
+                    <div style={{height: "270px"}} className="w-full max-w-[50px] bg-gradient-to-t from-purple-500 to-pink-500 rounded-t-lg relative group">
+                      <div className={`absolute -top-6 left-1/2 transform -translate-x-1/2 ${theme === 'dark' ? 'bg-white/10' : 'bg-black/10'} px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+                        $92,500
+                      </div>
+                      <div className={`absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs ${theme === 'dark' ? 'text-white/70' : 'text-gray-600'}`}>Apr</div>
+                    </div>
+                    <div style={{height: "195px"}} className="w-full max-w-[50px] bg-gradient-to-t from-purple-500 to-pink-500 rounded-t-lg relative group">
+                      <div className={`absolute -top-6 left-1/2 transform -translate-x-1/2 ${theme === 'dark' ? 'bg-white/10' : 'bg-black/10'} px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+                        $68,800
+                      </div>
+                      <div className={`absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs ${theme === 'dark' ? 'text-white/70' : 'text-gray-600'}`}>May</div>
+                    </div>
+                    <div style={{height: "240px"}} className="w-full max-w-[50px] bg-gradient-to-t from-purple-500 to-pink-500 rounded-t-lg relative group">
+                      <div className={`absolute -top-6 left-1/2 transform -translate-x-1/2 ${theme === 'dark' ? 'bg-white/10' : 'bg-black/10'} px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+                        $84,100
+                      </div>
+                      <div className={`absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs ${theme === 'dark' ? 'text-white/70' : 'text-gray-600'}`}>Jun</div>
+                    </div>
+                    <div className={`absolute left-0 bottom-0 w-full h-[1px] ${theme === 'dark' ? 'bg-white/10' : 'bg-black/10'}`}></div>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-4">
+                  <div className={`${theme === 'dark' ? 'bg-custom-dark-4' : 'bg-custom-light-2'} rounded-xl border ${theme === 'dark' ? 'border-white/10' : 'border-black/10'} p-6`}>
+                    <h4 className={`text-lg font-semibold mb-3 ${theme === 'dark' ? 'text-white/90' : 'text-gray-800'}`}>Key Insights</h4>
+                    <ul className={`space-y-2 text-sm ${theme === 'dark' ? 'text-white/70' : 'text-gray-600'}`}>
+                      <li className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-pink-500"></span>
+                        Highest sales: April ($92,500)
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                        Lowest sales: March ($52,300)
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-pink-500"></span>
+                        Average monthly sales: $73,633
+                      </li>
+                    </ul>
+                  </div>
+                  <div className={`${theme === 'dark' ? 'bg-custom-dark-4' : 'bg-custom-light-2'} rounded-xl border ${theme === 'dark' ? 'border-white/10' : 'border-black/10'} p-6`}>
+                    <h4 className={`text-lg font-semibold mb-3 ${theme === 'dark' ? 'text-white/90' : 'text-gray-800'}`}>Trends</h4>
+                    <div className={`space-y-2 text-sm ${theme === 'dark' ? 'text-white/70' : 'text-gray-600'}`}>
+                      <p>Strong recovery observed after March dip, with April showing exceptional performance.</p>
+                      <p>Q2 average is 25% higher than Q1, indicating positive growth trajectory.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-4">
+                <div className={`${theme === 'dark' ? 'bg-custom-dark-4' : 'bg-custom-light-2'} rounded-xl border ${theme === 'dark' ? 'border-white/10' : 'border-black/10'} p-6`}>
+                  <h4 className={`text-lg font-semibold mb-3 ${theme === 'dark' ? 'text-white/90' : 'text-gray-800'}`}>Recommendations</h4>
+                  <div className={`space-y-3 text-sm ${theme === 'dark' ? 'text-white/70' : 'text-gray-600'}`}>
+                    <p>Based on the analysis of your sales data, here are key recommendations:</p>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li>Investigate March's performance drop to prevent future occurrences</li>
+                      <li>Replicate April's successful strategies across other months</li>
+                      <li>Maintain the positive momentum seen in Q2</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
-            <span className="text-lg sm:text-2xl font-bold text-white text-center">{heading}</span>
-          </div>
-          <div className="prose prose-invert max-w-none ml-0 sm:ml-[60px] text-sm sm:text-base">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{message}</ReactMarkdown>
-          </div>
-        </div>
-        {/* Actions */}
-        <div className="bg-custom-dark-3 hidden sm:flex flex-col gap-2 rounded-xl border-[1px] border-white/10 p-2 sm:p-4 text-white">
-          <button className="flex items-center justify-center rounded-full p-1.5 sm:p-2 text-gray-400 hover:bg-white/10 hover:text-white">
+          </motion.div>
+        </motion.div>
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className={`${theme === 'dark' ? 'bg-custom-dark-3' : 'bg-custom-light-1'} hidden sm:flex flex-col gap-2 rounded-xl border-[1px] ${theme === 'dark' ? 'border-white/10' : 'border-black/10'} p-2 sm:p-4 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+        >
+          <motion.button 
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className={`flex items-center justify-center rounded-full p-1.5 sm:p-2 ${theme === 'dark' ? 'text-gray-400 hover:bg-white/10 hover:text-white' : 'text-gray-500 hover:bg-black/5 hover:text-gray-800'}`}
+          >
             <svg
               width="18"
               height="18"
@@ -90,8 +237,12 @@ const BotMessage = ({ message, heading }: { message: string, heading: string }) 
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
-          <button className="rounded-full p-1.5 sm:p-2 text-gray-400 hover:bg-white/10 hover:text-white">
+          </motion.button>
+          <motion.button 
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className={`rounded-full p-1.5 sm:p-2 text-gray-400 hover:bg-white/10 hover:text-white`}
+          >
             <svg
               width="18"
               height="18"
@@ -108,8 +259,12 @@ const BotMessage = ({ message, heading }: { message: string, heading: string }) 
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
-          <button className="rounded-full p-1.5 sm:p-2 text-gray-400 hover:bg-white/10 hover:text-white">
+          </motion.button>
+          <motion.button 
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className={`rounded-full p-1.5 sm:p-2 text-gray-400 hover:bg-white/10 hover:text-white`}
+          >
             <svg
               width="18"
               height="18"
@@ -126,8 +281,12 @@ const BotMessage = ({ message, heading }: { message: string, heading: string }) 
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
-          <button className="rounded-full p-1.5 sm:p-2 text-gray-400 hover:bg-white/10 hover:text-white">
+          </motion.button>
+          <motion.button 
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className={`rounded-full p-1.5 sm:p-2 text-gray-400 hover:bg-white/10 hover:text-white`}
+          >
             <svg
               width="18"
               height="18"
@@ -144,8 +303,12 @@ const BotMessage = ({ message, heading }: { message: string, heading: string }) 
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
-          <button className="rounded-full p-1.5 sm:p-2 text-gray-400 hover:bg-white/10 hover:text-white">
+          </motion.button>
+          <motion.button 
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className={`rounded-full p-1.5 sm:p-2 text-gray-400 hover:bg-white/10 hover:text-white`}
+          >
             <svg
               width="18"
               height="18"
@@ -162,31 +325,47 @@ const BotMessage = ({ message, heading }: { message: string, heading: string }) 
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       </div>
-      {/* New Action Buttons */}
-      <div className="flex justify-center gap-2 sm:gap-4">
-        <button className="flex items-center gap-1 sm:gap-2 rounded-lg bg-custom-dark-3 px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-300 hover:bg-white/10 border-[1px] border-white/10">
-          <svg width="16" height="16" className="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.8 }}
+        className="flex justify-center gap-4 mt-2"
+      >
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className={`flex items-center gap-2 rounded-lg ${theme === 'dark' ? 'bg-custom-dark-3' : 'bg-custom-light-1'} px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300 hover:bg-white/10' : 'text-gray-600 hover:bg-black/5'} ${theme === 'dark' ? 'border-white/10' : 'border-black/10'} border-[1px]`}
+        >
+          <svg width="16" height="16" className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           Add to Your Reports
-        </button>
-        <button className="flex items-center gap-1 sm:gap-2 rounded-lg bg-custom-dark-3 px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-300 hover:bg-white/10 border-[1px] border-white/10">
-          <svg width="16" height="16" className="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        </motion.button>
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className={`flex items-center gap-2 rounded-lg ${theme === 'dark' ? 'bg-custom-dark-3' : 'bg-custom-light-1'} px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300 hover:bg-white/10' : 'text-gray-600 hover:bg-black/5'} ${theme === 'dark' ? 'border-white/10' : 'border-black/10'} border-[1px]`}
+        >
+          <svg width="16" height="16" className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15M7 10L12 15M12 15L17 10M12 15V3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           Download
-        </button>
-        <button className="flex items-center gap-1 sm:gap-2 rounded-lg bg-custom-dark-3 px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-300 hover:bg-white/10 border-[1px] border-white/10">
-          <svg width="16" height="16" className="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        </motion.button>
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className={`flex items-center gap-2 rounded-lg ${theme === 'dark' ? 'bg-custom-dark-3' : 'bg-custom-light-1'} px-4 py-2 text-sm ${theme === 'dark' ? 'text-gray-300 hover:bg-white/10' : 'text-gray-600 hover:bg-black/5'} ${theme === 'dark' ? 'border-white/10' : 'border-black/10'} border-[1px]`}
+        >
+          <svg width="16" height="16" className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 9V13M12 17H12.01M3 12C3 13.1819 3.23279 14.3522 3.68508 15.4442C4.13738 16.5361 4.80031 17.5282 5.63604 18.364C6.47177 19.1997 7.46392 19.8626 8.55585 20.3149C9.64778 20.7672 10.8181 21 12 21C13.1819 21 14.3522 20.7672 15.4442 20.3149C16.5361 19.8626 17.5282 19.1997 18.364 18.364C19.1997 17.5282 19.8626 16.5361 20.3149 15.4442C20.7672 14.3522 21 13.1819 21 12C21 9.61305 20.0518 7.32387 18.364 5.63604C16.6761 3.94821 14.3869 3 12 3C9.61305 3 7.32387 3.94821 5.63604 5.63604C3.94821 7.32387 3 9.61305 3 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           More Sources
-        </button>
-      </div>
-    </div>
+        </motion.button>
+      </motion.div>
+    </motion.div>
   );
 };
 

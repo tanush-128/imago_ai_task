@@ -7,7 +7,7 @@ interface Message {
   heading?: string;
 }
 
-interface ChatContextType {
+interface ChatContextType { 
   messages: Message[];
   sendMessage: (content: string) => void;
   clearMessages: () => void;

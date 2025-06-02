@@ -1,14 +1,35 @@
 import { useState } from "react";
 import { useChatContext } from "../context/ChatContext";
+import { useTheme } from "next-themes";
 
 const ChatInput = () => {
   // const [attachedFile  , setAttachedFile] = useState<string | null>(null);
   const { sendMessage, message, setMessage, attachedFiles, setAttachedFiles } = useChatContext();
+  const [showSuggestions, setShowSuggestions] = useState(true);
+  const { theme } = useTheme();
 
   const suggestions = [
-    "Create an image for my presentation",
-    "What to do with kids' art",
-    "Find the decade that a photo is from",
+    {
+      text: "Create an image for my presentation",
+      icon: "✨",
+      tooltip: "Generate a custom image perfect for your next presentation"
+    },
+    {
+      text: "What to do with kids' art",
+      icon: "🎨",
+      tooltip: "Get creative ideas for preserving and displaying children's artwork"
+    },
+    {
+      text: "Find the decade that a photo is from",
+      icon: "📅",
+      tooltip: "Analyze historical photos to determine their time period"
+    },
+    {
+      text: "Generate a logo for my brand",
+      icon: "🎯",
+      tooltip: "Create a professional logo design for your business"
+    },
+ 
   ];
 
   const handleSubmit = () => {
@@ -19,9 +40,10 @@ const ChatInput = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-2 sm:px-4 bg-custom-dark-2 pb-2 sm:pb-4 z-50 rounded-b-2xl md:rounded-b-4xl">
+    <div className={`mx-auto w-full sm:px-4 ${theme === 'dark' ? 'bg-custom-dark-2' : 'bg-custom-light-2'} pb-2 sm:pb-4 z-50 rounded-b-2xl md:rounded-b-4xl`}>
+      <div className="flex flex-col gap-2 max-w-7xl mx-auto px-2 py-2">
       {/* Input Container */}
-      <div className="bg-custom-dark-3 relative rounded-2xl md:rounded-full border-[1px] border-white/10 p-2 sm:p-4 focus-within:border-white/20 hover:border-white/20">
+      <div className={`${theme === 'dark' ? 'bg-custom-dark-3' : 'bg-custom-light-1'} relative rounded-2xl md:rounded-full border-[1px] ${theme === 'dark' ? 'border-white/10' : 'border-black/10'} p-2 sm:p-4 focus-within:border-white/20 hover:border-white/20`}>
         <div className="flex items-center gap-2">
           {/* File Attachment Display */}
           {attachedFiles.map((file) => (
@@ -67,7 +89,7 @@ const ChatInput = () => {
               }
             }}
             placeholder="Ask anything from here"
-            className="flex-1 bg-transparent text-sm sm:text-base text-white placeholder-gray-400 outline-none"
+            className={`flex-1 bg-transparent text-sm sm:text-base ${theme === 'dark' ? 'text-white' : 'text-black'} placeholder-gray-400 outline-none`}
           />
 
           <label className="cursor-pointer transition-transform hover:scale-110 active:scale-95">
@@ -115,17 +137,58 @@ const ChatInput = () => {
         </div>
       </div>
 
-      {/* Suggestions */}
-      <div className="mt-2 sm:mt-4 flex flex-wrap gap-2">
-        {suggestions.map((suggestion, index) => (
-          <button
-            key={index}
-            onClick={() => setMessage(suggestion)}
-            className="rounded-full bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-white transition-all hover:bg-white/20 active:bg-white/30 hover:scale-105 active:scale-95"
-          >
-            {suggestion}
-          </button>
-        ))}
+      {/* Suggestions Toggle */}
+      <div className="relative">
+        {showSuggestions ? (
+          <div className="absolute right-0 -top-3 sm:-top-2">
+            <button 
+              onClick={() => setShowSuggestions(false)}
+              className="text-gray-400 hover:text-white text-sm flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-all group"
+            >
+              <span>Hide suggestions</span>
+              <svg className="w-4 h-4 opacity-70 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+        ) : (
+          <div className="flex justify-end mb-2">
+            <button 
+              onClick={() => setShowSuggestions(true)}
+              className="text-gray-400 hover:text-white text-sm flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-all group"
+            >
+              <span>Show suggestions</span>
+              <svg className="w-4 h-4 opacity-70 group-hover:opacity-100 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+        )}
+
+        {/* Suggestions List */}
+        {showSuggestions && (
+          <div className="mt-2 sm:mt-4 flex flex-wrap gap-2 relative">
+            {suggestions.map((suggestion, index) => (
+              <button
+                key={index}
+                onClick={() => setMessage(suggestion.text)}
+                className={`group rounded-full ${theme === 'dark' ? 'bg-white/5' : 'bg-black/5'} px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm 
+                  ${theme === 'dark' ? 'text-white/90' : 'text-black/90'} 
+                           transition-all hover:bg-white/15 active:bg-white/20 hover:scale-102 active:scale-98
+                           ${theme === 'dark' ? 'border-white/10 hover:border-white/20' : 'border-black/10 hover:border-black/20'} border flex items-center gap-2 relative`}
+                title={suggestion.tooltip}
+              >
+                <span className="opacity-70 group-hover:opacity-100">{suggestion.icon}</span>
+                <span className="opacity-90 group-hover:opacity-100">{suggestion.text}</span>
+                <span className={`absolute -top-2 -right-2 scale-0 group-hover:scale-100 transition-transform ${theme === 'dark' ? 'bg-white/10' : 'bg-black/10'} 
+                               rounded-full px-1.5 text-[10px] backdrop-blur-sm opacity-0 group-hover:opacity-100`}>
+                  Use
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
       </div>
     </div>
   );

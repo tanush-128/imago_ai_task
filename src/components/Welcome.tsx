@@ -1,5 +1,6 @@
 import { useChatContext } from "../context/ChatContext";
 import { ActionButton } from "./ActionButton";
+import { motion } from "framer-motion";
 
 const Welcome = () => {
   const { setMessage } = useChatContext();
@@ -40,29 +41,100 @@ const Welcome = () => {
     setMessage(title);
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen p-4 sm:p-8 md:p-12">
-      <div className="mx-auto max-w-6xl">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen p-4 sm:p-8 md:p-12"
+    >
+      <div className="mx-auto">
         {/* Welcome Message */}
-        <h1 className="mb-2 text-3xl sm:text-4xl md:text-5xl font-bold">
-          <span className="bg-gradient-to-r from-blue-500 to-red-500 bg-clip-text text-transparent">
-            Hi Milano Cherry
-          </span>
-        </h1>
-        <p className="mb-8 md:mb-12 text-xl sm:text-2xl md:text-3xl text-gray-400">How can I help you today</p>
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-0">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mb-2 text-3xl sm:text-4xl md:text-5xl font-bold"
+          >
+            <span className="bg-gradient-to-r from-blue-500 to-red-500 bg-clip-text text-transparent">
+              Hi Milano Cherry
+            </span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="mb-8 md:mb-12 text-xl sm:text-2xl md:text-3xl text-gray-400"
+          >
+            How can I help you today
+          </motion.p>
+        </motion.div>
+
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-0"
+        >
           {/* Action Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full lg:w-auto">
+          <motion.div 
+            variants={containerVariants}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full lg:w-auto"
+          >
             {actionCards.map((card, index) => (
-              <ActionButton key={index} card={card} onClick={() => handleActionClick(card.title)} />
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <ActionButton card={card} onClick={() => handleActionClick(card.title)} />
+              </motion.div>
             ))}
-          </div>
-          <div className="w-full max-w-[300px] lg:w-[500px] hidden md:block">
-            <img src="bot.svg" alt="Welcome" className="w-full h-auto" />
-          </div>
-        </div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="w-full max-w-[400px] lg:w-[400px] hidden md:block"
+          >
+            <motion.img 
+              whileHover={{ scale: 1.05 }}
+              src="bot.svg" 
+              alt="Welcome" 
+              className="w-full h-auto" 
+            />
+          </motion.div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
